@@ -13,9 +13,10 @@ from surprise.reader import Reader
 import numpy as np
 import pandas as pd
 
-# garments_df = 
+item_cat_df = pd.read_csv('data/item_category.csv')
 
 ratings_df = pd.read_csv('data/ratings_df.csv')
+
 # items_matrix = pd.read_csv('data/item_cos_matrix.csv')
 
 class garmentRecommender():
@@ -32,7 +33,6 @@ class garmentRecommender():
         data = Dataset.load_from_df(self.ratings_matrix, reader)
 
         self.trainset = data.build_full_trainset()
-        # return self.trainset
 
     def fit(self):
         return self.model.fit(self.trainset)
@@ -49,13 +49,16 @@ class garmentRecommender():
                                                                                              ascending=False)[0:n]
         return self.predictions
 
-    def recommend_item(self):
+    def recommend_item(self, category_data):
+        self.category_data = category_data
         self.recommended_item = []
-        self.user_items = self.ratings_matrix[self.ratings_matrix['user_id'] == self.usr_id]['item_id']
+        self.user_items = np.array(self.ratings_matrix[self.ratings_matrix['user_id'] == self.usr_id]['item_id'])
+        
         for itm in self.predictions['iid']:
             if itm not in self.user_items:
-                self.recommended_item.append(itm)
-
+                temp = self.category_data[self.category_data['item_id'] == itm]['category'].to_list()[0]
+                self.recommended_item.append([itm, temp])
+                
         return self.recommended_item
 
 
@@ -74,4 +77,4 @@ if __name__ == "__main__":
     # print(recommender.predict(691468, 5))
     recommender.predict(691468, 5)
 
-    print(recommender.recommend_item())
+    print(recommender.recommend_item(item_cat_df))
