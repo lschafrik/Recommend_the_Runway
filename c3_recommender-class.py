@@ -40,20 +40,16 @@ class garmentRecommender():
         Notes: Column labels : Column Description = 'uid':User ID, 'iid':Item ID, and 'est':Predicted Rating
         '''
 
-        self.usr_id = usr_id
-        self.item_lst = np.unique(np.array(self.ratings_matrix['item_id']))
-        self.predictions = []
-
-        for itm in self.item_lst:
-            self.predictions.append(self.algo.predict(usr_id, itm))
+        item_lst = self.ratings_matrix['item_id'].unique()
         
-        self.predictions = pd.DataFrame(self.predictions)[['uid', 'iid', 'est']].sort_values(by='est',
-                                                                                             ascending=False)[0:n]
-        # return self.predictions
+        predictions = [self.algo.predict(usr_id, itm) for itm in item_lst]
+        
+        return pd.DataFrame(predictions)[['uid', 'iid', 'est']].sort_values(by='est',ascending=False)[0:n]
 
-    def recommend_item(self):
+
+    def recommend_item(self, usr_id, n=5):
         '''
-        Returns the top 'n' recommended items based on ratings_matrix and the item's related related category
+        Returns the top 'n' recommended items based on ratings_matrix and the item's related  category
 
         OUTPUT:
             self.recommended_item: LIST OF LISTS - [[INT(item_id), STR(category)], ...]
@@ -62,12 +58,12 @@ class garmentRecommender():
         '''
 
         recommended_items = []
-        user_items = np.array(self.ratings_matrix[self.ratings_matrix['user_id'] == self.usr_id]['item_id'])
+        user_items = self.ratings_matrix[self.ratings_matrix['user_id'] == usr_id]['item_id']
         
-        for itm in self.predictions['iid']:
+        for itm in self.predict(usr_id, n)['iid']:
             if itm not in user_items:
-                temp = self.category_data[self.category_data['item_id'] == itm]['category'].to_list()[0]
-                recommended_items.append([itm, temp])
+                category_name = self.category_data[self.category_data['item_id'] == itm]['category'].to_list()[0]
+                recommended_items.append([itm, category_name])
                 
         return recommended_items
 
@@ -75,7 +71,7 @@ class garmentRecommender():
 
 # if __name__ == "__main__":
 
-#     recommender = garmentRecommender()
+    recommender = garmentRecommender()
 #     recommender.predict(47002)
 
 #     print(recommender.recommend_item())
