@@ -65,7 +65,6 @@ class garmentRecommender:
         for itm in self.predict(usr_id, n)['iid']:
             if itm not in user_items:
                 category_name = self.category_data[itm]
-                # recommended_items.append([itm, category_name])
                 recommended_items[itm] = category_name
                 
         recommended_df =  pd.DataFrame.from_dict(recommended_items, orient='index', columns=['category'])
@@ -81,10 +80,9 @@ class garmentRecommender:
         recommended_items = dict()
 
         for itm in similar_items_id:
-            if itm not in user_items:
-                category_name = self.category_data[itm]
-                # recommended_items.append([itm, category_name])
-                recommended_items[itm] = category_name
+            if int(itm) not in user_items:
+                category_name = self.category_data[int(itm)]
+                recommended_items[int(itm)] = category_name
                 
         recommended_df =  pd.DataFrame.from_dict(recommended_items, orient='index', columns=['category'])
         recommended_df.index.name = 'item_id'
