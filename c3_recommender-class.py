@@ -27,7 +27,7 @@ class garmentRecommender:
         self.category_data = category_data
         self.item_matrix = item_matrix
 
-    def _predict(self, usr_id, n=5):
+    def __predict__(self, usr_id, n=5):
         '''
         Takes a User ID and creates a Pandas DataFrame of given user's rating predictions for all items
 
@@ -48,7 +48,7 @@ class garmentRecommender:
         return pd.DataFrame(predictions)[['uid', 'iid', 'est']].sort_values(by='est',ascending=False)[0:n]
 
 
-    def ratings_recommend(self, usr_id, n=5):
+    def recommend_onratings(self, usr_id, n=5):
         '''
         Returns the top 'n' recommended items based on ratings_matrix and the item's related  category
 
@@ -62,11 +62,10 @@ class garmentRecommender:
         Notes: Further descriptive information on items is currently unavailable; only recognizable by category
         '''
 
-        # recommended_items = []
         recommended_items = dict()
         user_items = self.ratings_matrix[self.ratings_matrix['user_id'] == usr_id]['item_id']
         
-        for itm in self._predict(usr_id, n)['iid']:
+        for itm in self.__predict__(usr_id, n)['iid']:
             if itm not in user_items:
                 category_name = self.category_data[itm]
                 recommended_items[itm] = category_name
@@ -76,7 +75,7 @@ class garmentRecommender:
 
         return recommended_df
 
-    def item_recommend(self, usr_id, n=5, similarity_limit=0.99):
+    def recommend_onitems(self, usr_id, n=5, similarity_limit=0.99):
         '''
         Takes a User ID and creates a Pandas DataFrame of item recommendations based on user's highest-rated item_id's similarity with other items in item_matrix
 
@@ -109,11 +108,6 @@ class garmentRecommender:
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    recommender = garmentRecommender()
-    example_user = 47002
-
-    print(recommender.ratings_recommend(example_user))
-
-    print(recommender.item_recommend(example_user))
+#     recommender = garmentRecommender()
