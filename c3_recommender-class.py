@@ -20,16 +20,15 @@ class garmentRecommender():
     Rent the Runway garment recommender
     '''
 
-    def __init__(self, model=surprise_model, ratings_matrix=ratings_df, category_data=item_cat_df, items_matrix=None):
+    def __init__(self, model=surprise_model, ratings_matrix=ratings_df, category_data=item_cat_df):
         self.model = model
         self.algo = self.model[1]
         self.ratings_matrix = ratings_matrix
         self.category_data = category_data
-        self.items_matrix = items_matrix
 
     def predict(self, usr_id, n=5):
         '''
-        Takes a User ID and creates a Pandas DataFrame of rating predictions for all items
+        Takes a User ID and creates a Pandas DataFrame of given user's rating predictions for all items
 
         INPUT:
             usr_id: INTEGER - User ID to perform rating predictions on
@@ -62,21 +61,21 @@ class garmentRecommender():
         Notes: Further descriptive information on items is currently unavailable; only recognizable by category
         '''
 
-        self.recommended_item = []
-        self.user_items = np.array(self.ratings_matrix[self.ratings_matrix['user_id'] == self.usr_id]['item_id'])
+        recommended_items = []
+        user_items = np.array(self.ratings_matrix[self.ratings_matrix['user_id'] == self.usr_id]['item_id'])
         
         for itm in self.predictions['iid']:
-            if itm not in self.user_items:
+            if itm not in user_items:
                 temp = self.category_data[self.category_data['item_id'] == itm]['category'].to_list()[0]
-                self.recommended_item.append([itm, temp])
+                recommended_items.append([itm, temp])
                 
-        return self.recommended_item
+        return recommended_items
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    recommender = garmentRecommender()
-    recommender.predict(47002)
+#     recommender = garmentRecommender()
+#     recommender.predict(47002)
 
-    print(recommender.recommend_item())
+#     print(recommender.recommend_item())
