@@ -10,12 +10,12 @@ import pandas as pd
 
 surprise_model = load("data/svd_garment_model.pickle")
 ratings_df = pd.read_csv('data/ratings_df.csv')
-item_cat_df = pd.read_csv('data/item_category.csv')
+item_cat_df = pd.read_csv('data/item_category.csv').set_index('item_id')['category']
 
 # items_matrix = pd.read_csv('data/item_cos_matrix.csv')
 
 
-class garmentRecommender():
+class garmentRecommender:
     '''
     Rent the Runway garment recommender
     '''
@@ -62,16 +62,17 @@ class garmentRecommender():
         
         for itm in self.predict(usr_id, n)['iid']:
             if itm not in user_items:
-                category_name = self.category_data[self.category_data['item_id'] == itm]['category'].to_list()[0]
+                category_name = self.category_data[itm]
                 recommended_items.append([itm, category_name])
                 
         return recommended_items
 
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
     recommender = garmentRecommender()
-#     recommender.predict(47002)
+    example_user = 47002
+    print(recommender.predict(example_user))
 
-#     print(recommender.recommend_item())
+    print(recommender.recommend_item(example_user))
