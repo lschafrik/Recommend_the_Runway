@@ -12,8 +12,8 @@ surprise_model = load("data/svd_garment_model.pickle")
 ratings_df = pd.read_csv('data/ratings_df.csv')
 item_cat_df = pd.read_csv('data/item_category.csv').set_index('item_id')['category']
 
-# items_matrix = pd.read_csv('data/item_cos_matrix.csv')
-
+items_matrix = pd.read_csv('data/item_cos_matrix.csv')
+items_matrix.set_index(items_matrix.columns, inplace=True)
 
 class garmentRecommender:
     '''
@@ -57,22 +57,27 @@ class garmentRecommender:
         Notes: Further descriptive information on items is currently unavailable; only recognizable by category
         '''
 
-        recommended_items = []
+        # recommended_items = []
+        recommended_items = dict()
         user_items = self.ratings_matrix[self.ratings_matrix['user_id'] == usr_id]['item_id']
         
         for itm in self.predict(usr_id, n)['iid']:
             if itm not in user_items:
                 category_name = self.category_data[itm]
-                recommended_items.append([itm, category_name])
+                # recommended_items.append([itm, category_name])
+                recommended_items[itm] = category_name
                 
-        return recommended_items
+        recommended_df =  pd.DataFrame.from_dict(recommended_items, orient='index', columns=['category'])
+        recommended_df.index.name = 'item_id'
+
+        return recommended_df
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    recommender = garmentRecommender()
-    example_user = 47002
-    print(recommender.predict(example_user))
+    # recommender = garmentRecommender()
+    # example_user = 47002
+    # print(recommender.predict(example_user))
 
-    print(recommender.recommend_item(example_user))
+    # print(recommender.recommend_item(example_user))
