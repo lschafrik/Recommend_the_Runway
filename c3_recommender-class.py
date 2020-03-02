@@ -236,12 +236,12 @@ what a {basedon_nmf['category'].iloc[0] }!")
 
 # if __name__ == "__main__":
 
-#     recommender = garmentRecommender()
+#     r = garmentRecommender()
 
     
 #     # usr = int(input("Greetings!  Please enter a User ID :  "))
 
-#     basedon_ratings = recommender.recommend_svd(47002)
+#     basedon_ratings = r.recommend_svd(47002)
 #     basedon_items = r.recommend_item(47002)
 #     basedon_nmf = r.recommend_nmf(47002)
 
