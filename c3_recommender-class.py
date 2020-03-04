@@ -53,7 +53,6 @@ class garmentRecommender:
         
         return pd.DataFrame(predictions)[['uid', 'iid', 'est']].sort_values(by='est',ascending=False)[0:n]
 
-
     def recommend_svd(self, usr_id, n=5):
         '''
         Returns the top 'n' recommended items based on ratings_matrix and the item's related  category
@@ -113,7 +112,6 @@ class garmentRecommender:
 
         return recommended_df
 
-
     def recommend_nmf(self, usr_id, n=5):
             '''
             Takes a User ID and creates a Pandas DataFrame of item recommendations based 
@@ -130,7 +128,6 @@ class garmentRecommender:
             '''
 
             user_items = self.ratings_matrix[self.ratings_matrix['user_id'] == usr_id]
-            # user_fave_itm = str(int(user_items.sort_values(by='rating', ascending=False).iloc[0].item_id))
             similar_items_id = self.nmf_matrix.loc[usr_id].sort_values(ascending=False)[0:n].index
 
 
@@ -148,177 +145,51 @@ class garmentRecommender:
 
 
 
-    # usr = int(input("Greetings!  Please enter a User ID :  "))
+def recommend_something(recommender_results, recommender_name, usr, choice_count=4):
+    if recommender_name not in ['svd', 'item', 'nmf']:
+        return "'recommender_name' entry invalid, please enter one of the following: 'svd', 'item', or 'nmf'.  Thank you!"
+    else:
+        prep_phrases = np.array(["Sifting through socks...", "Trying on trousers...", "Contemplating coats...", 
+        "Meticulously prepping mannequins...", "Ruminating over rompers...", "Sorting through sweaters...", 
+        "Tailoring turtlenecks...", "Judging jumpsuits...", "Pondering pants...", "Deliberating denim...", 
+        "Speculating over suits...", "Viewing various vests..."])
 
-    # basedon_ratings = recommender.recommend_svd(47002)
-    # basedon_items = recommender.recommend_item(47002)
-    # basedon_nmf = recommender.recommend_nmf(47002)
+        choice_phrases = np.random.choice(prep_phrases, choice_count, replace=False)
 
-    # print(basedon_ratings)
-    # print(basedon_items)
+        print()
 
-def recommend_something(basedon_ratings, basedon_items, basedon_nmf, usr):
-    print()
-    time.sleep(1)
-    print()
-    print(f"Hello, User {usr}, and thank you for choosing Recommend the Runway!  Please hold while we find the perfect outfit for you!")
-    print()
-    time.sleep(3)
-    print("Sifting through socks...")
-    time.sleep(1)
-    print("Trying on trousers...")
-    time.sleep(1)
-    print("Contemplating coats...")
-    time.sleep(1)
-    print("Meticulously prepping mannequins...")
-    time.sleep(1)
-    print()
-    print(f"Wonderful news, User {usr}!  Based on previous ratings made by yourself and other similar users, we think you'll love\
-Item {basedon_ratings.index[0]}.  You have great taste - it's a wonderful {basedon_ratings['category'].iloc[0] }!")
+        print(f"Hello, User {usr}, and thank you for choosing Recommend the Runway!  \
+Please hold while we find the perfect outfit for you!")
 
-    time.sleep(3)
-    print()
-    print()
-    print()
-
-    cont = input(f"Still there, User {usr}?  Would you like a different kind of recommendation (y/n)? :  ")
-    print()
-    print()
-
-    if cont == 'y':
-
-        print(f"Hello, User {usr}, and welcome back to Recommend the Runway!  Please hold while we find another perfect outfit for you!")
         print()
         time.sleep(3)
-        print("Ruminating over rompers...")
-        time.sleep(1)
-        print("Sorting through sweaters...")
-        time.sleep(1)
-        print("Tailoring turtlenecks...")
-        time.sleep(1)
-        print("Judging jumpsuits...")
-        time.sleep(1)
-        print()
-        print(f"What fun, User {usr}!  Based on your highest rated item, we have found another similar item we think you'll greatly enjoy; your taste is, as usual, exquisite -\
-Item {basedon_items.index[0]} is a breathtaking {basedon_items['category'].iloc[0] }!")
 
+        for chce in choice_phrases:
+            print(chce)
+            time.sleep(1)
+
+        print()
+
+        if recommender_name == "svd":
+            print(f"Wonderful news, User {usr}!  Based on previous ratings made by yourself and other similar users, \
+we think you'll love Item {recommender_results.index[0]}.  You have great taste - it's a \
+wonderful {recommender_results['category'].iloc[0] }!")
+        elif recommender_name == "item":
+            print(f"What fun, User {usr}!  Based on your highest rated item, we have found another similar item we \
+think you'll greatly enjoy; your taste is exquisite - Item {recommender_results.index[0]} is a \
+breathtaking {recommender_results['category'].iloc[0] }!")
+        elif recommender_name == "nmf":
+            print(f"Oh my, User {usr}!  Based on previously rated items, we have located an item we hope to dazzle \
+you with: Item {recommender_results.index[0]} - what a {recommender_results['category'].iloc[0] }!")
+        
         time.sleep(3)
         print()
-        print()
-        print()
-
-        cont = input(f"Still there, User {usr}?  Would you like one more kind of recommendation (y/n)? :  ")
-        print()
-        print()
-
-        if cont == 'y':
-
-            print(f"Hello, User {usr}, and welcome back to Recommend the Runway!  Please hold while we find one more perfect outfit for you!")
-            print()
-            time.sleep(3)
-            print("Pondering pants...")
-            time.sleep(1)
-            print("Deliberating denim...")
-            time.sleep(1)
-            print("Speculating over suits...")
-            time.sleep(1)
-            print("Viewing various vests...")
-            time.sleep(1)
-            print()
-            print(f"Oh my, User {usr}!  Based on previously rated items, we have located yet another item we hope to dazzle you with: Item {basedon_nmf.index[0]} - \
-what a {basedon_nmf['category'].iloc[0] }!")
-            time.sleep(2)
-            print()
-            print()
-            print(f"Farewell, User {usr} - we hope to see you again soon!")
-
+        print(f"Farewell, User {usr} - we hope to see you again soon!")
 
 
 # if __name__ == "__main__":
 
-#     r = garmentRecommender()
-
-    
-#     # usr = int(input("Greetings!  Please enter a User ID :  "))
-
-#     basedon_ratings = r.recommend_svd(47002)
-#     basedon_items = r.recommend_item(47002)
-#     basedon_nmf = r.recommend_nmf(47002)
-
-#     # print(basedon_ratings)
-#     # print(basedon_items)
-
-#     def recommend_something(basedon_ratings, basedon_items, basedon_nmf, usr):
-#         print()
-#         time.sleep(1)
-#         print()
-#         print(f"Hello, User {usr}, and thank you for choosing Recommend the Runway!  Please hold while we find the perfect outfit for you!")
-#         print()
-#         time.sleep(3)
-#         print("Sifting through socks...")
-#         time.sleep(1)
-#         print("Trying on trousers...")
-#         time.sleep(1)
-#         print("Contemplating coats...")
-#         time.sleep(1)
-#         print("Meticulously prepping mannequins...")
-#         time.sleep(1)
-#         print()
-#         print(f"Wonderful news, User {usr}!  Based on previous ratings made by yourself and other similar users, we think you'll love\
-#     Item {basedon_ratings.index[0]}.  You have great taste - it's a wonderful {basedon_ratings['category'].iloc[0] }!")
-
-#         time.sleep(3)
-#         print()
-#         print()
-#         print()
-
-#         cont = input(f"Still there, User {usr}?  Would you like a different kind of recommendation (y/n)? :  ")
-#         print()
-#         print()
-
-#         if cont == 'y':
-
-#             print(f"Hello, User {usr}, and welcome back to Recommend the Runway!  Please hold while we find another perfect outfit for you!")
-#             print()
-#             time.sleep(3)
-#             print("Ruminating over rompers...")
-#             time.sleep(1)
-#             print("Sorting through sweaters...")
-#             time.sleep(1)
-#             print("Tailoring turtlenecks...")
-#             time.sleep(1)
-#             print("Judging jumpsuits...")
-#             time.sleep(1)
-#             print()
-#             print(f"What fun, User {usr}!  Based on your highest rated item, we have found another similar item we think you'll greatly enjoy; your taste is, as usual, exquisite -\
-#     Item {basedon_items.index[0]} is a breathtaking {basedon_items['category'].iloc[0] }!")
-
-#             time.sleep(3)
-#             print()
-#             print()
-#             print()
-
-#             cont = input(f"Still there, User {usr}?  Would you like one more kind of recommendation (y/n)? :  ")
-#             print()
-#             print()
-
-#             if cont == 'y':
-
-#                 print(f"Hello, User {usr}, and welcome back to Recommend the Runway!  Please hold while we find one more perfect outfit for you!")
-#                 print()
-#                 time.sleep(3)
-#                 print("Pondering pants...")
-#                 time.sleep(1)
-#                 print("Deliberating denim...")
-#                 time.sleep(1)
-#                 print("Speculating over suits...")
-#                 time.sleep(1)
-#                 print("Viewing various vests...")
-#                 time.sleep(1)
-#                 print()
-#                 print(f"Oh my, User {usr}!  Based on previously rated items, we have located yet another item we hope to dazzle you with: Item {basedon_nmf.index[0]} - \
-#                     what a {basedon_nmf['category'].iloc[0] }!")
-#                 time.sleep(2)
-#                 print()
-#                 print()
-#                 print(f"Farewell, User {usr} - we hope to see you again soon!")
+    # r = garmentRecommender()
+    # usr = 47002
+    # svd_r = r.recommend_svd(usr)
+    # print(recommend_something(svd_r, 'svd', usr))
